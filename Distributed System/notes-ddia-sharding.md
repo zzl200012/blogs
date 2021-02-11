@@ -2,7 +2,7 @@
 
 ### Motivation
 
-* 提高可扩展性（scale-up）
+* 提高可扩展性（scale out）
 * 负载均衡
 
 ### Overview
