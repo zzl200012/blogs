@@ -86,4 +86,6 @@
 
 ---
 
-Last updated at 2021.02.11
+publish: 2021-02-11
+
+update: 2021-02-11
