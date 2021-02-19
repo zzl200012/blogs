@@ -58,6 +58,18 @@
 * 根据 workload 动态调整 LRU 和 LFU 的使用比例
 * 具体先放着，后面有空再整 //TODO
 
+2021-02-19 update:
+
+* 看了一下就是同时维护一个 LRU 和一个 LFU 队列以及它们的「Ghost 队列」，后者用来存放被 evict 的 item（只存 key），流程大致如下：
+  * 开始时整个 cache 分成两部分，LFU 和 LRU 各占一半，其中分界线记为 p，后续会动态调整
+  * 每次被淘汰的 item 会把它的 key 放入对应的 Ghost 中
+  * 考虑一个数据项，第一次 cache miss 时放入 LRU
+  * 如果 cache hit，且 LFU 中没有，则放入 LFU
+  * 如果 cache miss，但是在 Ghost 中 hit，说明当前的 workload 希望我们这个 Ghost 对应的 LRU/LFU 空间能再大一点就好了，于是把 p 的位置 +1/-1
+  * 这样一来就做到了动态调整
+* 总结一下其实 ARC 和前面的 LRU-K 的思路都是差不多的，即在访问频率和访问先后之间做 tradeoff，但是 ARC 和 2Q 的本质区别是他不需要设置参数，而 2Q 是要把参数写死的，写死就意味着适应能力的局限，需要对 workload 的变化人工调整参数
+* 准备把 ARC 做进分布式缓存的 demo 里，实现起来其实也挺简单
+
 ## LIRS
 
 一种 LRU 的优化，后面有空研究
@@ -66,4 +78,4 @@
 
 publish: 2021-02-18
 
-update: 2021-02-18
+update: 2021-02-19
